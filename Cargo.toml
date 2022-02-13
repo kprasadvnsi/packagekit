@@ -1,0 +1,19 @@
+[package]
+name = "packagekit"
+version = "0.1.0"
+authors = ["Kali Prasad <kprasadvnsi@protonmail.com>"]
+description = "Library to interface with PackageKit API"
+repository = "https://github.com/kprasadvnsi/packagekit"
+readme = "README.md"
+license = "MIT"
+categories = ["os::unix-apis"]
+keywords = ["D-Bus", "DBus", "IPC", "PackageKit", "zbus"]
+edition = "2021"
+
+[dependencies]
+zbus = "2.1.1"
+zvariant = "3.1.2"
+
+
+[dev-dependencies]
+async-std = { version = "1.10.0", features = ["attributes" ] }

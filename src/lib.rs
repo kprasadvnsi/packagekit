@@ -2,5 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 mod packagekit;
+mod transaction;
 
 pub use self::packagekit::*;
+pub use self::transaction::*;

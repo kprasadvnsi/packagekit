@@ -22,10 +22,11 @@ fn main() -> zbus::Result<()> {
         
         let mut stream = transcation.receive_package().await?;
 
-        transcation.get_packages(0).await?;
+        transcation.resolve(0, &vec!["blender"]).await?;
         while let Some(pkg) = stream.next().await {
             let args = pkg.args()?;
-            println!("{:?}", args);   
+            println!("{:?}", args); 
+            break;  
         }
         
         Ok(())

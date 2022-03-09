@@ -15,20 +15,20 @@ fn main() -> zbus::Result<()> {
         let handle = pk.create_transaction().await?;
         //let mut stream = TransactionProxy::receive_package().await?;
         let transcation = TransactionProxy::builder(&connection)
-                                                        .destination(destination)?
-                                                        .path(handle)?
-                                                        .build()
-                                                        .await?;
-        
+            .destination(destination)?
+            .path(handle)?
+            .build()
+            .await?;
+
         let mut stream = transcation.receive_package().await?;
 
         transcation.resolve(0, &vec!["blender"]).await?;
         while let Some(pkg) = stream.next().await {
             let args = pkg.args()?;
-            println!("{:?}", args); 
-            break;  
+            println!("{:?}", args);
+            break;
         }
-        
+
         Ok(())
     })
 }

@@ -3,12 +3,8 @@
 
 extern crate packagekit;
 
+use futures::{future::FutureExt, pin_mut, stream::StreamExt};
 use packagekit::{PackageKitProxy, TransactionProxy};
-use futures::{
-    future::FutureExt,
-    stream::StreamExt,
-    pin_mut,
-};
 
 fn main() -> zbus::Result<()> {
     futures::executor::block_on(async move {
@@ -19,22 +15,27 @@ fn main() -> zbus::Result<()> {
         let pk = PackageKitProxy::new(&connection).await?;
         let handle = pk.create_transaction().await?;
         let transcation = TransactionProxy::builder(&connection)
-                                                        .destination(destination)?
-                                                        .path(handle)?
-                                                        .build()
-                                                        .await?;
-        
+            .destination(destination)?
+            .path(handle)?
+            .build()
+            .await?;
+
         let mut package_stream = transcation.receive_package().await?;
         let mut progress_stream = transcation.receive_item_progress().await?;
         let mut finish_stream = transcation.receive_finished().await?;
 
-        transcation.install_packages(0, &vec!["blender;2.83.5+dfsg-5build1;amd64;ubuntu-hirsute-universe"]).await?;
+        transcation
+            .install_packages(
+                0,
+                &vec!["blender;2.83.5+dfsg-5build1;amd64;ubuntu-hirsute-universe"],
+            )
+            .await?;
 
         loop {
             let package = package_stream.next().fuse();
             let progress = progress_stream.next().fuse();
             let finish = finish_stream.next().fuse();
-            
+
             pin_mut!(package, progress, finish);
 
             futures_util::select! {
@@ -57,9 +58,9 @@ fn main() -> zbus::Result<()> {
                         break;
                     }
                 },
-            };  
+            };
         }
-        
+
         Ok(())
     })
 }
